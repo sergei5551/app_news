@@ -1,6 +1,5 @@
-package ru.application.news_app.ui.theme
+package ru.application.news_app.presentation.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -10,6 +9,13 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import ru.application.news_app.presentation.ui.Pink40
+import ru.application.news_app.presentation.ui.Pink80
+import ru.application.news_app.presentation.ui.Purple40
+import ru.application.news_app.presentation.ui.Purple80
+import ru.application.news_app.presentation.ui.PurpleGrey40
+import ru.application.news_app.presentation.ui.PurpleGrey80
+import ru.application.news_app.presentation.ui.Typography
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -34,7 +40,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun News_appTheme(
+fun NewsAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

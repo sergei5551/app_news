@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">news_app</string>
+    <string name="app_name">NewsApp</string>
+
+    <!-- Экран входа-->
+    <string name="enter_email">Enter email</string>
+    <string name="enter_password">Enter password</string>
+    <string name="login">Enter</string>
+    <string name="register">Registration</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="continue_with">Continue with</string>
+
 </resources>
