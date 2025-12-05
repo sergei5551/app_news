@@ -1,5 +1,7 @@
 package ru.application.news_app.presentation.ui.component
 
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -17,13 +19,14 @@ fun StyledButton(
 ){
     Button(
         modifier = modifier
-            .width(300.dp),
+            .width(240.dp)
+            .height(70.dp)
+            .padding(top = 10.dp),
         onClick = onClick,
         shape = RoundedCornerShape(size = 30.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFAAE16),
+            containerColor = Color(0xFFEEC11D),
             contentColor = Color.Black
-
         )
     ) {
         content()

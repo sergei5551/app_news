@@ -35,15 +35,15 @@ fun MainNav(
         startDestination = Screen.Login
     ){
         composable<Screen.Login>{
-            LoginScreen { navigateTo ->
-                navHostController.navigate(navigateTo)
-            }
+            LoginScreen (
+                onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) }
+            )
         }
 
         composable<Screen.Register>{
-            RegisterScreen { navigateTo ->
-                navHostController.navigate(navigateTo)
-            }
+            RegisterScreen (
+                onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) }
+            )
         }
 
         composable<Screen.MainTabAll>{

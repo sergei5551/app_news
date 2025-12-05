@@ -2,33 +2,46 @@ package ru.application.news_app.presentation.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.application.news_app.R
 import ru.application.news_app.presentation.navigation.Screen
+import ru.application.news_app.presentation.screen.viewmodel.LoginScreenViewModel
 import ru.application.news_app.presentation.ui.component.CustomTextField
 import ru.application.news_app.presentation.ui.component.StyledButton
 
 @Composable
 fun LoginScreen(
-    onNavigationTo: (Screen) -> Unit = {}
+    onNavigationTo: (Screen) -> Unit = {},
+    viewModel: LoginScreenViewModel = viewModel()
 ) {
 
     Column(
@@ -89,68 +102,128 @@ fun LoginScreen(
                         .padding(top = 50.dp)
                 )
             }
-            Text(
-                text = "Login",
-                fontSize = 50.sp,
+
+            Image(
+                painter = painterResource(id = R.drawable.login_image),
+                contentDescription = "login_image",
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 190.dp),
+                    .padding(top = 200.dp)
+                    .size(100.dp)
             )
         }
-        // Контейнер элементов
+
+        // Основной контент с weight
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier
-
+                .weight(1f) // ЗАНИМАЕТ ВСЕ ОСТАВШЕЕСЯ ПРОСТРАНСТВО
         ) {
             Column(
                 modifier = Modifier
-                    .padding(top = 70.dp)
+                    .padding(top = 50.dp)
                     .align(Alignment.TopCenter)
             ) {
                 CustomTextField(
-                    value = "Email",
-                    onValueChange = {},
+                    value = viewModel.email,
+                    onValueChange = viewModel::updateEmail,
+                    leadingIcon = {Icon(Icons.Filled.Email, contentDescription = "Email") },
+                    placeholder = {
+                        Text(text = stringResource(id = R.string.enter_email))
+                    },
                     modifier = Modifier
-                    )
-                CustomTextField(
-                    value = "Password",
-                    onValueChange = {},
-                    modifier = Modifier.padding(top = 12.dp)
                 )
+                CustomTextField(
+                    value = viewModel.password,
+                    onValueChange = viewModel::updatePassword,
+                    leadingIcon = {Icon(Icons.Filled.Lock, contentDescription = "Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.enter_password),
+                        )
+                    },
+                    modifier = Modifier.padding(top = 12.dp),
+
+                    )
             }
             Image(
-                painter = painterResource(id = R.drawable.bask_image_newspaper),
+                painter = painterResource(id = R.drawable.back_image_newspaper),
                 contentDescription = "newspaper",
                 modifier = Modifier
                     .size(400.dp)
             )
-            Column() {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 StyledButton(
                     onClick = {},
-                    modifier = Modifier.padding(top = 300.dp)
+                    modifier = Modifier.padding(top = 200.dp)
                 ) {
                     Text(
-                        text = "Sing in"
+                        text = stringResource(id = R.string.login)
                     )
                 }
 
                 StyledButton(
-                    onClick = {},
-                    modifier = Modifier.padding(top = 350.dp)
+                    onClick = {
+                        onNavigationTo(Screen.Register)
+                    },
                 ) {
                     Text(
-                        text = "Registration"
+                        text = stringResource(id = R.string.register)
                     )
                 }
+                Text(
+                    text = stringResource(id = R.string.forgot_password),
+                    color = Color(0xFF214DFF),
+                    modifier = Modifier.padding(top = 10.dp)
+                        .clickable{
+
+                        }
+                )
             }
         }
-        Text(
-            text = "Forgot password?",
-            color = Color(0xFF214DFF)
-        )
 
+        // Социальные иконки
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp), // Отступ снизу
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text(
+                text = stringResource(id = R.string.continue_with),
+                color = Color.Black
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ){
+                Spacer(modifier = Modifier.width(16.dp))
+                Image(
+                    painter = painterResource(id = R.drawable.vk),
+                    contentDescription = "vk",
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.gmail),
+                    contentDescription = "gmail",
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.classmates),
+                    contentDescription = "classmates",
+                    modifier = Modifier
+                        .size(50.dp)
 
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+        }
     }
 }
 

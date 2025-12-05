@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.ui.text)
+    implementation(libs.androidx.foundation.layout)
     ksp(libs.hilt.android.compiler)
     implementation(libs.glide)
     implementation(libs.okhttp)
