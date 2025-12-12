@@ -21,8 +21,10 @@ fun CustomTextField(
     leadingIcon: (@Composable () -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     placeholder: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null
 ){
     OutlinedTextField(
+        trailingIcon = trailingIcon,
         visualTransformation = visualTransformation,
         placeholder = placeholder,
         value = value,

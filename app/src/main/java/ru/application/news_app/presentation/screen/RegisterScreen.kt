@@ -2,7 +2,6 @@ package ru.application.news_app.presentation.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.application.news_app.R
 import ru.application.news_app.presentation.navigation.Screen
-import ru.application.news_app.presentation.screen.viewmodel.LoginScreenViewModel
 import ru.application.news_app.presentation.screen.viewmodel.RegisterScreenViewModel
 import ru.application.news_app.presentation.ui.component.CustomTextField
 import ru.application.news_app.presentation.ui.component.StyledButton

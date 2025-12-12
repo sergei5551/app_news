@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class LoginScreenViewModel : ViewModel() {
+    var isPasswordVisible by mutableStateOf(false)
+        private set
     var email by mutableStateOf("")
         private set
     var password by mutableStateOf("")
@@ -15,5 +17,8 @@ class LoginScreenViewModel : ViewModel() {
     }
     fun updatePassword(password: String){
         this.password = password
+    }
+    fun togglePasswordVisibility() {
+        isPasswordVisible = !isPasswordVisible
     }
 }
