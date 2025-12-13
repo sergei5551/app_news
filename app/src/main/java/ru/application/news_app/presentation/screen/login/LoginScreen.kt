@@ -1,4 +1,4 @@
-package ru.application.news_app.presentation.screen
+package ru.application.news_app.presentation.screen.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,14 +36,26 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.application.news_app.R
 import ru.application.news_app.presentation.navigation.Screen
-import ru.application.news_app.presentation.screen.viewmodel.LoginScreenViewModel
 import ru.application.news_app.presentation.ui.component.CustomTextField
 import ru.application.news_app.presentation.ui.component.StyledButton
 
 @Composable
 fun LoginScreen(
+    onNavigationTo: (Screen) -> Unit
+) {
+    val viewModel = viewModel<LoginScreenViewModel>()
+    LoginView(
+        state = viewModel.state,
+        onNavigationTo = onNavigationTo,
+        onEvent = viewModel::onEvent
+    )
+}
+
+@Composable
+fun LoginView(
     onNavigationTo: (Screen) -> Unit = {},
-    viewModel: LoginScreenViewModel = viewModel()
+    state: LoginScreenState = LoginScreenState(),
+    onEvent: (LoginScreenEvent) -> Unit = {}
 ) {
 
     Column(
@@ -123,23 +135,27 @@ fun LoginScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(top = 50.dp)
+                    .padding(top = 20.dp)
                     .align(Alignment.TopCenter)
             ) {
                 CustomTextField(
-                    value = viewModel.email,
-                    onValueChange = viewModel::updateEmail,
-                    leadingIcon = {Icon(Icons.Filled.Email, contentDescription = "Email") },
+                    value = state.email,
+                    onValueChange = {
+                        onEvent(LoginScreenEvent.EmailUpdated(it))
+                    },
+                    leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email") },
                     placeholder = {
                         Text(text = stringResource(id = R.string.enter_email))
                     },
                     modifier = Modifier
                 )
                 CustomTextField(
-                    value = viewModel.password,
-                    onValueChange = viewModel::updatePassword,
-                    leadingIcon = {Icon(Icons.Filled.Lock, contentDescription = "Password") },
-                    visualTransformation = if (viewModel.isPasswordVisible) {
+                    value = state.password,
+                    onValueChange = {
+                        onEvent(LoginScreenEvent.PasswordUpdated(it))
+                    },
+                    leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Password") },
+                    visualTransformation = if (state.isPasswordVisible) {
                         VisualTransformation.None // Показывать текст
                     } else {
                         PasswordVisualTransformation() // Скрывать текст
@@ -147,16 +163,16 @@ fun LoginScreen(
                     trailingIcon = {
                         IconButton(
                             onClick = {
-                                viewModel.togglePasswordVisibility()
+                                onEvent(LoginScreenEvent.IsPasswordVisibleUpdated(!state.isPasswordVisible))
                             }
                         ) {
                             Icon(
-                                imageVector = if (viewModel.isPasswordVisible) {
+                                imageVector = if (state.isPasswordVisible) {
                                     Icons.Filled.Visibility
                                 } else {
                                     Icons.Filled.VisibilityOff
                                 },
-                                contentDescription = if (viewModel.isPasswordVisible) {
+                                contentDescription = if (state.isPasswordVisible) {
                                     "Скрыть пароль"
                                 } else {
                                     "Показать пароль"
@@ -183,8 +199,9 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 StyledButton(
-                    onClick = {},
-                    modifier = Modifier.padding(top = 200.dp)
+                    onClick = {
+                    },
+                    modifier = Modifier.padding(top = 180.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.login)
@@ -203,8 +220,9 @@ fun LoginScreen(
                 Text(
                     text = stringResource(id = R.string.forgot_password),
                     color = Color(0xFF214DFF),
-                    modifier = Modifier.padding(top = 10.dp)
-                        .clickable{
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .clickable {
 
                         }
                 )
@@ -217,7 +235,7 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp), // Отступ снизу
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = stringResource(id = R.string.continue_with),
                 color = Color.Black
@@ -226,7 +244,7 @@ fun LoginScreen(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(
                     painter = painterResource(id = R.drawable.vk),
@@ -255,6 +273,6 @@ fun LoginScreen(
 
 @Composable
 @Preview(showBackground = true)
-fun LoginScreenPreview(){
-    LoginScreen()
+fun LoginScreenPreview() {
+    LoginView()
 }

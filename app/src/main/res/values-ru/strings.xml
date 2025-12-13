@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Новостное приложение</string>
     <string name="enter_email">Ввдите e-mail</string>
     <string name="enter_password">Введите пароль</string>
     <string name="login">Войти</string>
     <string name="register">Зарегестрироваться</string>
     <string name="forgot_password">Забыли пароль?</string>
     <string name="continue_with">Продолжить с</string>
+    <string name="enter_username">Введите имя</string>
+    <string name="repeat_password">Повторить пароль</string>
+    <string name="alr_registered">Уже зарегестрировались? войти</string>
 </resources>

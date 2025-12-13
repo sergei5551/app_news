@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NewsApp</string>
+    <string name="app_name" translatable="false">NewsApp</string>
     <!-- Экран входа-->
     <string name="enter_email">Enter email</string>
     <string name="enter_password">Enter password</string>
@@ -8,4 +8,8 @@
     <string name="forgot_password">Forgot password?</string>
     <string name="continue_with">Continue with</string>
 
+    <!-- Экран загрузки-->
+    <string name="enter_username">Enter username</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="alr_registered">Already registered? sing in</string>
 </resources>

@@ -7,7 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 
-import ru.application.news_app.presentation.screen.*
+import ru.application.news_app.presentation.screen.login.LoginScreen
+import ru.application.news_app.presentation.screen.main.home.MainScreenTabAll
+import ru.application.news_app.presentation.screen.main.home.MainScreenTabFavorites
+import ru.application.news_app.presentation.screen.main.home.MainScreenTabSection
+import ru.application.news_app.presentation.screen.register.RegisterScreen
 
 sealed class Screen(){
     @Serializable
@@ -35,13 +39,13 @@ fun MainNav(
         startDestination = Screen.Login
     ){
         composable<Screen.Login>{
-            LoginScreen (
+            LoginScreen(
                 onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) }
             )
         }
 
         composable<Screen.Register>{
-            RegisterScreen (
+            RegisterScreen(
                 onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) }
             )
         }

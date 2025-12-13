@@ -1,7 +1,8 @@
-package ru.application.news_app.presentation.screen
+package ru.application.news_app.presentation.screen.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,14 +15,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockReset
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,18 +31,37 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import ru.application.news_app.R
+import ru.application.news_app.domain.entity.User
 import ru.application.news_app.presentation.navigation.Screen
-import ru.application.news_app.presentation.screen.viewmodel.RegisterScreenViewModel
 import ru.application.news_app.presentation.ui.component.CustomTextField
 import ru.application.news_app.presentation.ui.component.StyledButton
 
 @Composable
 fun RegisterScreen(
-    onNavigationTo: (Screen) -> Unit = {},
-    viewModel: RegisterScreenViewModel = viewModel()
+    onNavigationTo: (Screen) -> Unit = {}
 ) {
+    val viewModel = viewModel<RegisterScreenViewModel>()
+    RegisterView(
+        state = viewModel.state,
+        onNavigationTo = onNavigationTo,
+        onEvent = viewModel::onEvent
+    )
+
+}
+
+@Composable
+fun RegisterView(
+    onNavigationTo: (Screen) -> Unit = {},
+    state: RegisterScreenState = RegisterScreenState(),
+    onEvent: (RegisterScreenEvent) -> Unit = {}
+) {
+    val f = Firebase.firestore
+    /*
     val gradientBrush = Brush.linearGradient(
         colors = listOf(
             Color(0xFF9E6802),
@@ -50,6 +71,7 @@ fun RegisterScreen(
         start = Offset(0f,200f),
         end = Offset(100f,0f),
     )
+     */
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -127,22 +149,43 @@ fun RegisterScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(top = 50.dp)
+                    .padding(top = 20.dp)
                     .align(Alignment.TopCenter),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CustomTextField(
-                    value = viewModel.email,
-                    onValueChange = viewModel::updateEmail,
-                    leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email") },
+                    value = state.username,
+                    onValueChange = {
+                        onEvent(RegisterScreenEvent.UsernameUpdated(it))
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Filled.AccountCircle,
+                            contentDescription = "username"
+                        )
+                    },
                     placeholder = {
-                        Text(text = stringResource(id = R.string.enter_email))
+                        Text(text = stringResource(id = R.string.enter_username))
                     },
                     modifier = Modifier
                 )
                 CustomTextField(
-                    value = viewModel.password,
-                    onValueChange = viewModel::updatePassword,
+                    value = state.email,
+                    onValueChange = {
+                        onEvent(RegisterScreenEvent.EmailUpdated(it))
+                    },
+                    leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email") },
+                    placeholder = {
+                        Text(text = stringResource(id = R.string.enter_email))
+                    },
+
+                    modifier = Modifier.padding(top = 12.dp),
+                )
+                CustomTextField(
+                    value = state.password,
+                    onValueChange = {
+                        onEvent(RegisterScreenEvent.PasswordUpdated(it))
+                    },
                     leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "Password") },
                     visualTransformation = PasswordVisualTransformation(),
                     placeholder = {
@@ -151,31 +194,51 @@ fun RegisterScreen(
                     modifier = Modifier.padding(top = 12.dp),
                 )
                 CustomTextField(
-                    value = viewModel.email,
-                    onValueChange = viewModel::updateEmail,
-                    leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email") },
-                    placeholder = {
-                        Text(text = stringResource(id = R.string.enter_email))
+                    value = state.repeat_password,
+                    onValueChange = {
+                        onEvent(RegisterScreenEvent.RepeatPasswordUpdated(it))
                     },
-                    modifier = Modifier.padding(top = 12.dp),
-                )
-                CustomTextField(
-                    value = viewModel.email,
-                    onValueChange = viewModel::updateEmail,
-                    leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email") },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Filled.LockReset,
+                            contentDescription = "repeat_password"
+                        )
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
                     placeholder = {
-                        Text(text = stringResource(id = R.string.enter_email))
+                        Text(text = stringResource(id = R.string.repeat_password))
                     },
                     modifier = Modifier.padding(top = 12.dp),
                 )
                 StyledButton(
-                    onClick = {},
-                    modifier = Modifier.padding(top = 20.dp)
+                    onClick = {
+                        f.collection("user")
+                            .document().set(
+                                User(
+                                    "1",
+                                    state.username,
+                                    state.email,
+                                    state.password
+                                )
+                            )
+                    },
+                    modifier = Modifier.padding(top = 15.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.login)
                     )
                 }
+
+                Text(
+                    text = stringResource(id = R.string.alr_registered),
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .clickable {
+                            onNavigationTo(Screen.Login)
+                        }
+                )
             }
         }
 
@@ -185,7 +248,7 @@ fun RegisterScreen(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp), // Отступ снизу
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = stringResource(id = R.string.continue_with),
                 color = Color.Black
@@ -194,7 +257,7 @@ fun RegisterScreen(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
+            ) {
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(
                     painter = painterResource(id = R.drawable.vk),
@@ -221,8 +284,9 @@ fun RegisterScreen(
     }
 }
 
+
 @Composable
 @Preview(showBackground = true)
-fun RegisterScreenPreview(){
-    RegisterScreen()
+fun RegisterScreenPreview() {
+    RegisterView()
 }

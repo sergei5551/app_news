@@ -1,4 +1,4 @@
-package ru.application.news_app.presentation.screen
+package ru.application.news_app.presentation.screen.main.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
