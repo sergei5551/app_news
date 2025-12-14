@@ -1,21 +1,21 @@
-package ru.application.news_app.presentation.screen.login
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ArrowLeft
+import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,14 +31,14 @@ import ru.application.news_app.R
 import ru.application.news_app.presentation.navigation.Screen
 import ru.application.news_app.presentation.screen.recoverPassword.RecoverPasswordEvent
 import ru.application.news_app.presentation.screen.recoverPassword.RecoverPasswordScreenState
-import ru.application.news_app.presentation.screen.recoverPassword.RecoverPasswordnScreenViewModel
+import ru.application.news_app.presentation.screen.recoverPassword.RecoverPasswordScreenViewModel
 import ru.application.news_app.presentation.ui.component.CustomTextField
 
 @Composable
 fun RecoverPasswordScreen(
     onNavigationTo: (Screen) -> Unit
 ) {
-    val viewModel = viewModel< RecoverPasswordnScreenViewModel>()
+    val viewModel = viewModel<RecoverPasswordScreenViewModel>()
     RecoverPasswordView(
         state = viewModel.state,
         onNavigationTo = onNavigationTo,
@@ -50,7 +50,7 @@ fun RecoverPasswordScreen(
 fun RecoverPasswordView(
     onNavigationTo: (Screen) -> Unit = {},
     state: RecoverPasswordScreenState = RecoverPasswordScreenState(),
-    onEvent: (LoginScreenEvent) -> Unit = {}
+    onEvent: (RecoverPasswordEvent) -> Unit = {}
 ) {
 
     Column(
@@ -113,82 +113,84 @@ fun RecoverPasswordView(
             }
 
             Image(
-                painter = painterResource(id = R.drawable.login_image),
+                painter = painterResource(id = R.drawable.recover_password),
                 contentDescription = "login_image",
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 200.dp)
-                    .size(100.dp)
+                    .size(150.dp)
             )
         }
 
-        // Основной контент с weight
-        Box(
-            contentAlignment = Alignment.TopCenter,
-            modifier = Modifier
-                .weight(1f)
+        Column (
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(35.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(top = 20.dp)
-                    .align(Alignment.TopCenter)
-            ) {
-                CustomTextField(
-                    value = state.email,
-                    onValueChange = {
-                        onEvent(RecoverPasswordEvent.EmailUpdated(it))
-                    },
-                    leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "Email") },
-                    placeholder = {
-                        Text(text = stringResource(id = R.string.enter_email))
-                    },
-                    modifier = Modifier
-                )
 
-
-        }
-
-        // Социальные иконки
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp), // Отступ снизу
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(id = R.string.continue_with),
-                color = Color.Black
+            CustomTextField(
+                value = state.email,
+                onValueChange = {
+                    onEvent(RecoverPasswordEvent.EmailUpdated(it))
+                },
+                placeholder = {
+                    Text(text = stringResource(id = R.string.enter_email_for_recover))
+                },
+                modifier = Modifier.padding(top = 100.dp)
             )
-            Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(50.dp)
             ) {
-                Spacer(modifier = Modifier.width(16.dp))
-                Image(
-                    painter = painterResource(id = R.drawable.vk),
-                    contentDescription = "vk",
-                    modifier = Modifier
-                        .size(50.dp)
+                IconButton(
+                    onClick = {
+                        onNavigationTo(Screen.Login)
+                    },
+                    shape = RoundedCornerShape(size = 60.dp),
+                    modifier = Modifier.size(60.dp)
+                        .background(
+                            color = Color(0xFFf39f18),
+                            shape = RoundedCornerShape(60.dp)
+                        ),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = Color.White
+                    )
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.gmail),
-                    contentDescription = "gmail",
-                    modifier = Modifier
-                        .size(50.dp)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.classmates),
-                    contentDescription = "classmates",
-                    modifier = Modifier
-                        .size(50.dp)
+                {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowLeft,
+                        contentDescription = "Arrow",
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
 
+                IconButton(
+                    onClick = {
+
+                    },
+                    shape = RoundedCornerShape(size = 60.dp),
+                    modifier = Modifier.size(60.dp)
+                        .background(
+                            color = Color(0xFFf39f18),
+                            shape = RoundedCornerShape(60.dp)
+                        ),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = Color.White
+                    )
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowRight,
+                        contentDescription = "Arrow",
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+
+
             }
         }
     }
 }
+
 
 @Composable
 @Preview(showBackground = true)

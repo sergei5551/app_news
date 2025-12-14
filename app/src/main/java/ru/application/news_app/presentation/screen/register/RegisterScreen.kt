@@ -1,8 +1,8 @@
 package ru.application.news_app.presentation.screen.register
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,57 +21,66 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockReset
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import ru.application.news_app.R
-import ru.application.news_app.domain.entity.User
+import ru.application.news_app.domain.dao.AuthState
+import ru.application.news_app.domain.dao.AuthViewModel
 import ru.application.news_app.presentation.navigation.Screen
 import ru.application.news_app.presentation.ui.component.CustomTextField
 import ru.application.news_app.presentation.ui.component.StyledButton
 
 @Composable
 fun RegisterScreen(
-    onNavigationTo: (Screen) -> Unit = {}
+    onNavigationTo: (Screen) -> Unit = {},
+    authViewModel: AuthViewModel
 ) {
+
     val viewModel = viewModel<RegisterScreenViewModel>()
     RegisterView(
         state = viewModel.state,
         onNavigationTo = onNavigationTo,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::onEvent,
+        authViewModel = authViewModel
     )
-
 }
 
 @Composable
 fun RegisterView(
     onNavigationTo: (Screen) -> Unit = {},
     state: RegisterScreenState = RegisterScreenState(),
-    onEvent: (RegisterScreenEvent) -> Unit = {}
+    onEvent: (RegisterScreenEvent) -> Unit = {},
+    authViewModel: AuthViewModel = AuthViewModel(),
 ) {
-    val f = Firebase.firestore
-    /*
-    val gradientBrush = Brush.linearGradient(
-        colors = listOf(
-            Color(0xFF9E6802),
-            Color(0xFFBA7A04),
-            Color(0xFFE89907)
-        ),
-        start = Offset(0f,200f),
-        end = Offset(100f,0f),
-    )
-     */
+
+    val authState = authViewModel.authState.observeAsState()
+    val context = LocalContext.current
+    LaunchedEffect(authState.value) {
+        when(val currentState = authState.value) {
+            is AuthState.Authenticated -> onNavigationTo(Screen.MainTabAll)
+            is AuthState.Error -> {
+                Toast.makeText(
+                    context,
+                    currentState.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            else -> Unit
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -194,7 +203,7 @@ fun RegisterView(
                     modifier = Modifier.padding(top = 12.dp),
                 )
                 CustomTextField(
-                    value = state.repeat_password,
+                    value = state.repeatPassword,
                     onValueChange = {
                         onEvent(RegisterScreenEvent.RepeatPasswordUpdated(it))
                     },
@@ -212,15 +221,21 @@ fun RegisterView(
                 )
                 StyledButton(
                     onClick = {
-                        f.collection("user")
-                            .document().set(
-                                User(
-                                    "1",
-                                    state.username,
-                                    state.email,
-                                    state.password
-                                )
-                            )
+                        // Проверяем пароли
+                        if (state.password != state.repeatPassword) {
+                            Toast.makeText(
+                                context,
+                                "Passwords do not match",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            return@StyledButton
+                        }
+                        authViewModel.signUp(
+                            username = state.username,
+                            email = state.email,
+                            password = state.password
+                        )
                     },
                     modifier = Modifier.padding(top = 15.dp)
                 ) {
@@ -229,16 +244,15 @@ fun RegisterView(
                     )
                 }
 
-                Text(
-                    text = stringResource(id = R.string.alr_registered),
-                    fontSize = 14.sp,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .clickable {
-                            onNavigationTo(Screen.Login)
-                        }
-                )
+                TextButton(
+                    onClick = { onNavigationTo(Screen.Login) },
+                    modifier = Modifier.padding(top = 10.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.alr_registered),
+                        color = Color.Blue
+                    )
+                }
             }
         }
 

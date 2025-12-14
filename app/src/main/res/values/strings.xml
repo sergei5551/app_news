@@ -12,4 +12,7 @@
     <string name="enter_username">Enter username</string>
     <string name="repeat_password">Repeat password</string>
     <string name="alr_registered">Already registered? sing in</string>
+
+    <!-- Экран восстановление пароля-->
+    <string name="enter_email_for_recover">Enter email for recover password</string>
 </resources>

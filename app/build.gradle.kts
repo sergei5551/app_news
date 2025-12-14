@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.foundation.layout)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.compose.runtime.livedata)
     ksp(libs.hilt.android.compiler)
     implementation(libs.glide)
     implementation(libs.okhttp)

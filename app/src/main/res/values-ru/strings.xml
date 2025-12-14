@@ -9,4 +9,5 @@
     <string name="enter_username">Введите имя</string>
     <string name="repeat_password">Повторить пароль</string>
     <string name="alr_registered">Уже зарегестрировались? войти</string>
+    <string name="enter_email_for_recover">Введите email для восстановление пароля</string>
 </resources>

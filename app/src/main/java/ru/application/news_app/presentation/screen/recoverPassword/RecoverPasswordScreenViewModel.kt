@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 
-class RecoverPasswordnScreenViewModel : ViewModel() {
+class RecoverPasswordScreenViewModel : ViewModel() {
     var state by mutableStateOf(RecoverPasswordScreenState())
         private set
     fun onEvent(event: RecoverPasswordEvent){

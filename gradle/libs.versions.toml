@@ -24,6 +24,8 @@ foundationLayout = "1.9.5"
 foundation = "1.9.5"
 uiText = "1.9.5"
 foundationLayoutVersion = "1.10.0"
+firebaseAuth = "24.0.1"
+runtimeLivedata = "1.10.0"
 
 [libraries]
 # Hilt  - необходимого для интеграции с Android-компонентами, такими как Activity, Fragment, ViewModel
@@ -64,6 +66,8 @@ androidx-compose-foundation-layout = { group = "androidx.compose.foundation", na
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 androidx-compose-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 androidx-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayoutVersion" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

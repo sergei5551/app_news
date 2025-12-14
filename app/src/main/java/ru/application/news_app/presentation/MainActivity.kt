@@ -3,6 +3,7 @@ package ru.application.news_app.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -12,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import ru.application.news_app.domain.dao.AuthViewModel
 
 import ru.application.news_app.presentation.navigation.MainNav
 import ru.application.news_app.presentation.ui.theme.NewsAppTheme
@@ -19,11 +21,13 @@ import ru.application.news_app.presentation.ui.theme.NewsAppTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val authViewModel: AuthViewModel by viewModels()
         setContent {
             NewsAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPdding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainContent(
-                        modifier = Modifier.padding(innerPdding)
+                        modifier = Modifier.padding(innerPadding),
+                        authViewModel = authViewModel
                     )
                 }
             }
@@ -33,14 +37,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    authViewModel: AuthViewModel
 ){
-    MainNav(navHostController = rememberNavController(), modifier = modifier)
-}
-
-@Preview(showBackground = true)@Composable
-fun GreetingPreview(){
-    NewsAppTheme {
-        MainContent()
-    }
+    MainNav(navHostController = rememberNavController(), modifier = modifier, authViewModel = authViewModel)
 }

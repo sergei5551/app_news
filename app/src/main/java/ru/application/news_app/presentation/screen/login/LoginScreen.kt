@@ -1,8 +1,8 @@
 package ru.application.news_app.presentation.screen.login
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +22,17 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -35,19 +41,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.application.news_app.R
+import ru.application.news_app.domain.dao.AuthState
+import ru.application.news_app.domain.dao.AuthViewModel
 import ru.application.news_app.presentation.navigation.Screen
 import ru.application.news_app.presentation.ui.component.CustomTextField
 import ru.application.news_app.presentation.ui.component.StyledButton
 
 @Composable
 fun LoginScreen(
-    onNavigationTo: (Screen) -> Unit
+    onNavigationTo: (Screen) -> Unit,
+    authViewModel: AuthViewModel
 ) {
     val viewModel = viewModel<LoginScreenViewModel>()
     LoginView(
         state = viewModel.state,
         onNavigationTo = onNavigationTo,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::onEvent,
+        authViewModel = authViewModel
     )
 }
 
@@ -55,9 +65,24 @@ fun LoginScreen(
 fun LoginView(
     onNavigationTo: (Screen) -> Unit = {},
     state: LoginScreenState = LoginScreenState(),
-    onEvent: (LoginScreenEvent) -> Unit = {}
+    onEvent: (LoginScreenEvent) -> Unit = {},
+    authViewModel: AuthViewModel = AuthViewModel(),
 ) {
-
+    val authState = authViewModel.authState.observeAsState()
+    val context = LocalContext.current
+    LaunchedEffect(authState.value) {
+        when(val currentState = authState.value) {
+            is AuthState.Authenticated -> onNavigationTo(Screen.MainTabAll)
+            is AuthState.Error -> {
+                Toast.makeText(
+                    context,
+                    currentState.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            else -> Unit
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -200,8 +225,9 @@ fun LoginView(
             ) {
                 StyledButton(
                     onClick = {
+                        authViewModel.login(state.email, state.password)
                     },
-                    modifier = Modifier.padding(top = 180.dp)
+                    modifier = Modifier.padding(top = 150.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.login)
@@ -217,15 +243,15 @@ fun LoginView(
                         text = stringResource(id = R.string.register)
                     )
                 }
-                Text(
-                    text = stringResource(id = R.string.forgot_password),
-                    color = Color(0xFF214DFF),
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .clickable {
-
-                        }
-                )
+                TextButton(
+                    onClick = {onNavigationTo(Screen.RecoverPassword)},
+                    modifier = Modifier.padding(top = 15.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.forgot_password),
+                        color = Color.Blue
+                    )
+                }
             }
         }
 
