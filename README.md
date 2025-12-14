@@ -21,9 +21,6 @@ Watch the news without accessing other channels or websites on your phone.
 
 </center>
 
-## App
-
-[project_app_repository](https://github.com/sergei5551/app_news.git)
 
 <!--
 ## Installation 
@@ -36,7 +33,7 @@ Watch the news without accessing other channels or websites on your phone.
 -->
 ## Review
 
-![Review](https://github.com/sergei5551/app_news/review.gif)
+![Review](https://github.com/sergei5551/app_news/blob/main/review.gif)
 #
 
 ## Contributing
