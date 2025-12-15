@@ -1,6 +1,5 @@
 package ru.application.news_app.domain.dao
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -88,7 +87,6 @@ class AuthViewModel : ViewModel() {
         auth.signOut()
         _authState.value = AuthState.Unauthenticated
     }
-
     private fun updateUserProfile(firebaseUser: com.google.firebase.auth.FirebaseUser, username: String) {
         val profileUpdates = UserProfileChangeRequest.Builder()
             .setDisplayName(username)
@@ -101,7 +99,6 @@ class AuthViewModel : ViewModel() {
                 }
             }
     }
-
     private fun saveUserToFirestore(user: User) {
         firestore.collection("users")
             .document(user.id)
@@ -112,6 +109,11 @@ class AuthViewModel : ViewModel() {
             .addOnFailureListener { e ->
                 println("❌ Ошибка сохранения в Firestore: ${e.message}")
             }
+    }
+    fun resetError() {
+        if (_authState.value is AuthState.Error) {
+            _authState.value = AuthState.Unauthenticated
+        }
     }
 
 }

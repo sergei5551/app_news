@@ -1,37 +1,28 @@
-package ru.application.news_app.presentation.screen.main.home
+package ru.application.news_app.presentation.screen.main.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ru.application.news_app.domain.dao.AuthState
 import ru.application.news_app.domain.dao.AuthViewModel
 import ru.application.news_app.presentation.navigation.Screen
 
-
 @Composable
-fun MainScreenTabAll(
+fun ProfileScreen(
     onNavigationTo: (Screen) -> Unit = {},
     authViewModel: AuthViewModel = viewModel()
 ) {
-
-    MainScreenTabAllView(
-        onNavigationTo = onNavigationTo,
-        authViewModel = authViewModel
-    )
-
-}
-@Composable
-fun MainScreenTabAllView(
-    onNavigationTo: (Screen) -> Unit = {},
-    authViewModel: AuthViewModel = AuthViewModel(),
-){
     val authState = authViewModel.authState.observeAsState()
     LaunchedEffect(authState.value) {
         when(authState.value){
@@ -39,16 +30,32 @@ fun MainScreenTabAllView(
             else -> Unit
         }
     }
+    ProfileScreenView(
+        onNavigationTo = onNavigationTo,
+        authViewModel = authViewModel
+    )
+
+}
+@Composable
+fun ProfileScreenView(
+    onNavigationTo: (Screen) -> Unit = {},
+    authViewModel: AuthViewModel? = null,
+    authState: AuthState = AuthState.Unauthenticated
+){
+
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+            .background(color = Color(0xFFF5EAEA))
     ) {
         Text(
-            text = "MainScreenTabAll"
+            text = "Profile",
+            color = Color.Black
         )
         Button(
             onClick = {
-                authViewModel.signOut()
+                authViewModel?.signOut()
             }
         ) {
             Text(
@@ -61,5 +68,5 @@ fun MainScreenTabAllView(
 @Composable
 @Preview(showBackground = true)
 fun MainScreenPreview() {
-    MainScreenTabAllView()
+    ProfileScreenView()
 }

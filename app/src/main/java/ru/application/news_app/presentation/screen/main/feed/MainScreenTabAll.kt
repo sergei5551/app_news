@@ -1,0 +1,125 @@
+package ru.application.news_app.presentation.screen.main.feed
+
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+import ru.application.news_app.R
+import ru.application.news_app.domain.model.NewsItem
+
+
+@Composable
+fun MainScreenTabAll() {
+    MainScreenTabAllView()
+}
+@Composable
+fun MainScreenTabAllView(){
+    var searchText by remember { mutableStateOf("") }
+
+    val sampleNewsItems = listOf(
+        NewsItem(
+            id = "1",
+            title = "Breaking News: Compose Simplifies UI Development",
+            description = "Jetpack Compose is revolutionizing Android UI development with its declarative approach.",
+            imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuNlsfnHCpJNqy_3bE_Qk1K3HWiUkggy8z8g&s",
+            isFavorite = false,
+            publishedBy = "Tech News Daily",
+            publishedAt = kotlinx.datetime.LocalDateTime(2024, 6, 15, 10, 0),
+            url = ""
+        ),
+        NewsItem(
+            id = "2",
+            title = "Kotlin Multiplatform: One Language, Many Platforms",
+            description = "Kotlin Multiplatform allows developers to share code across multiple platforms seamlessly.",
+            imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuNlsfnHCpJNqy_3bE_Qk1K3HWiUkggy8z8g&s",
+            isFavorite = true,
+            publishedBy = "Dev Weekly",
+            publishedAt = kotlinx.datetime.LocalDateTime(2024, 6, 14, 9, 30),
+            url = ""
+        ),
+        NewsItem(
+            id = "3",
+            title = "Android 14: What's New?",
+            description = "Explore the latest features and improvements in Android 14.",
+            imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuNlsfnHCpJNqy_3bE_Qk1K3HWiUkggy8z8g&s",
+            isFavorite = false,
+            publishedBy = "Android Central",
+            publishedAt = kotlinx.datetime.LocalDateTime(2024, 6, 13, 14, 15),
+            url = ""
+        )
+    )
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .background(Color(0xFFF5EAEA)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        OutlinedTextField(
+            value = searchText,
+            onValueChange = { searchText = it },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Иконка поиска",
+                    tint = Color.Gray
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.search_news),
+                    fontSize = 18.sp,
+                    color = Color.Black
+                )
+            },
+            shape = RoundedCornerShape(15.dp),
+            modifier = Modifier.fillMaxWidth(0.9f)
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth(0.9f),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            items(sampleNewsItems) {
+                ru.application.news_app.presentation.ui.component.NewsItem(
+                    newsItem = it,
+                    onFavoriteClicked = {},
+                    onReadClicked = {}
+                )
+            }
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun MainScreenPreview() {
+    MainScreenTabAllView()
+}
+

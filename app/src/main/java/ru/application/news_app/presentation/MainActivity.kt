@@ -4,17 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import ru.application.news_app.domain.dao.AuthState
 import ru.application.news_app.domain.dao.AuthViewModel
-
 import ru.application.news_app.presentation.navigation.MainNav
 import ru.application.news_app.presentation.ui.theme.NewsAppTheme
 
@@ -22,23 +21,44 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val authViewModel: AuthViewModel by viewModels()
+
         setContent {
             NewsAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainContent(
-                        modifier = Modifier.padding(innerPadding),
-                        authViewModel = authViewModel
+                        authViewModel = authViewModel,
                     )
                 }
             }
         }
     }
-}
+
 
 @Composable
 fun MainContent(
-    modifier: Modifier = Modifier,
     authViewModel: AuthViewModel
-){
-    MainNav(navHostController = rememberNavController(), modifier = modifier, authViewModel = authViewModel)
+) {
+    // Наблюдаем за состоянием авторизации
+    val authState by authViewModel.authState.observeAsState()
+
+    // Определяем вошли ли мы в систему
+    val isLoggedIn = authState is AuthState.Authenticated
+
+    // Показываем индикатор загрузки пока проверяем состояние
+    when (authState) {
+        AuthState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        else -> {
+            // Когда состояние определено, показываем навигацию
+            MainNav(
+                authViewModel = authViewModel,
+                isLoggedIn = isLoggedIn
+            )
+        }
+    }
 }

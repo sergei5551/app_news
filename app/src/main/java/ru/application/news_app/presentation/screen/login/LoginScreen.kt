@@ -25,9 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -52,6 +50,24 @@ fun LoginScreen(
     onNavigationTo: (Screen) -> Unit,
     authViewModel: AuthViewModel
 ) {
+    val authState = authViewModel.authState.observeAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(authState.value) {
+        when(val currentState = authState.value) {
+            is AuthState.Authenticated -> onNavigationTo(Screen.MainScreen)
+            is AuthState.Error -> {
+                Toast.makeText(
+                    context,
+                    currentState.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+                authViewModel.resetError()
+            }
+            else -> Unit
+        }
+    }
+
     val viewModel = viewModel<LoginScreenViewModel>()
     LoginView(
         state = viewModel.state,
@@ -66,23 +82,10 @@ fun LoginView(
     onNavigationTo: (Screen) -> Unit = {},
     state: LoginScreenState = LoginScreenState(),
     onEvent: (LoginScreenEvent) -> Unit = {},
-    authViewModel: AuthViewModel = AuthViewModel(),
+    authViewModel: AuthViewModel? = null,
+    authState: AuthState = AuthState.Unauthenticated
 ) {
-    val authState = authViewModel.authState.observeAsState()
-    val context = LocalContext.current
-    LaunchedEffect(authState.value) {
-        when(val currentState = authState.value) {
-            is AuthState.Authenticated -> onNavigationTo(Screen.MainTabAll)
-            is AuthState.Error -> {
-                Toast.makeText(
-                    context,
-                    currentState.message,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            else -> Unit
-        }
-    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -158,10 +161,17 @@ fun LoginView(
             modifier = Modifier
                 .weight(1f)
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.back_image_newspaper),
+                contentDescription = "newspaper",
+                modifier = Modifier
+                    .size(400.dp)
+            )
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp)
-                    .align(Alignment.TopCenter)
+                    .align(Alignment.TopCenter),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CustomTextField(
                     value = state.email,
@@ -211,23 +221,14 @@ fun LoginView(
                         )
                     },
                     modifier = Modifier.padding(top = 12.dp),
-
                     )
-            }
-            Image(
-                painter = painterResource(id = R.drawable.back_image_newspaper),
-                contentDescription = "newspaper",
-                modifier = Modifier
-                    .size(400.dp)
-            )
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
                 StyledButton(
                     onClick = {
-                        authViewModel.login(state.email, state.password)
+                        authViewModel?.login(state.email, state.password)
+
                     },
-                    modifier = Modifier.padding(top = 150.dp)
+                    enabled = authState != AuthState.Loading,
+                    modifier = Modifier.padding(top = 15.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.login)
@@ -252,6 +253,12 @@ fun LoginView(
                         color = Color.Blue
                     )
                 }
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
             }
         }
 

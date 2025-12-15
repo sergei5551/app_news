@@ -6,13 +6,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
 import ru.application.news_app.domain.dao.AuthViewModel
-
 import ru.application.news_app.presentation.screen.login.LoginScreen
-import ru.application.news_app.presentation.screen.main.home.MainScreenTabAll
-import ru.application.news_app.presentation.screen.main.home.MainScreenTabFavorites
-import ru.application.news_app.presentation.screen.main.home.MainScreenTabSection
+import ru.application.news_app.presentation.screen.main.MainScreen
 import ru.application.news_app.presentation.screen.register.RegisterScreen
 
 
@@ -22,11 +20,8 @@ sealed class Screen(){
     @Serializable
     data object Register : Screen()
     @Serializable
-    data object MainTabAll : Screen()
-    @Serializable
-    data object MainTabSection : Screen()
-    @Serializable
-    data object MainTabFavorites : Screen()
+    data object MainScreen : Screen()
+
     @Serializable
     data object RecoverPassword: Screen()
 }
@@ -34,14 +29,15 @@ sealed class Screen(){
 @Composable
 fun MainNav(
     modifier: Modifier = Modifier,
-    navHostController: NavHostController,
-    authViewModel: AuthViewModel
+    navHostController: NavHostController = rememberNavController(),
+    authViewModel: AuthViewModel,
+    isLoggedIn: Boolean
 ){
 
     NavHost(
         modifier = modifier,
         navController = navHostController,
-        startDestination = Screen.Login
+        startDestination = if(isLoggedIn) Screen.MainScreen else Screen.Login
     ){
         composable<Screen.Login>{
             LoginScreen(onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) }, authViewModel = authViewModel)
@@ -51,20 +47,14 @@ fun MainNav(
             RegisterScreen(onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) }, authViewModel = authViewModel)
         }
 
-        composable<Screen.MainTabAll>{
-            MainScreenTabAll ( onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) }, authViewModel = authViewModel )
-        }
-
-        composable<Screen.MainTabSection>{
-            MainScreenTabSection ( onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) } )
-        }
-
-        composable<Screen.MainTabFavorites>{
-            MainScreenTabFavorites ( onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) } )
-        }
-
         composable<Screen.RecoverPassword>{
-            RecoverPasswordScreen ( onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) } )
+            RecoverPasswordScreen (onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) } )
         }
+
+        composable<Screen.MainScreen>{
+            MainScreen(onNavigationTo = { navigateTo -> navHostController.navigate(navigateTo) }, authViewModel = authViewModel)
+        }
+
+
     }
 }

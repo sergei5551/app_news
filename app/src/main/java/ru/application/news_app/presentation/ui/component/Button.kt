@@ -15,7 +15,8 @@ import androidx.compose.ui.unit.dp
 fun StyledButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    content: @Composable () -> Unit
+    enabled: Boolean = true,
+    content: @Composable () -> Unit,
 ){
     Button(
         modifier = modifier
@@ -27,7 +28,8 @@ fun StyledButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFFEEC11D),
             contentColor = Color.Black
-        )
+        ),
+        enabled = enabled
     ) {
         content()
     }

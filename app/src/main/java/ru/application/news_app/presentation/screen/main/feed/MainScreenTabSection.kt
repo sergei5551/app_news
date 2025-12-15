@@ -1,4 +1,4 @@
-package ru.application.news_app.presentation.screen.main.home
+package ru.application.news_app.presentation.screen.main.feed
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,15 +8,15 @@ import androidx.compose.ui.Alignment
 import ru.application.news_app.presentation.navigation.Screen
 
 @Composable
-fun MainScreenTabFavorites(
-    onNavigationTo: (Screen) -> Unit
+fun MainScreenTabSection(
+
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "MainScreenTabFavorites"
+            text = "MainScreenTabSection"
         )
     }
 }

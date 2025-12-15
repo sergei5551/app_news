@@ -10,4 +10,9 @@
     <string name="repeat_password">Повторить пароль</string>
     <string name="alr_registered">Уже зарегестрировались? войти</string>
     <string name="enter_email_for_recover">Введите email для восстановление пароля</string>
+    <string name="feed">Лента</string>
+    <string name="profile">Профиль</string>
+    <string name="setting">Настройки</string>
+    <string name="read">Читать</string>
+    <string name="search_news">Поиск новостей</string>
 </resources>

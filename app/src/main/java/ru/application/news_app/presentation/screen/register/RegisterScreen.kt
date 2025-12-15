@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -49,6 +50,23 @@ fun RegisterScreen(
     authViewModel: AuthViewModel
 ) {
 
+    val authState = authViewModel.authState.observeAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(authState.value) {
+        when(val currentState = authState.value) {
+            is AuthState.Authenticated -> onNavigationTo(Screen.MainScreen)
+            is AuthState.Error -> {
+                Toast.makeText(
+                    context,
+                    currentState.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+                authViewModel.resetError()
+            }
+            else -> Unit
+        }
+    }
     val viewModel = viewModel<RegisterScreenViewModel>()
     RegisterView(
         state = viewModel.state,
@@ -63,24 +81,10 @@ fun RegisterView(
     onNavigationTo: (Screen) -> Unit = {},
     state: RegisterScreenState = RegisterScreenState(),
     onEvent: (RegisterScreenEvent) -> Unit = {},
-    authViewModel: AuthViewModel = AuthViewModel(),
+    authViewModel: AuthViewModel? = null,
+    authState: AuthState = AuthState.Unauthenticated
 ) {
-
-    val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
-    LaunchedEffect(authState.value) {
-        when(val currentState = authState.value) {
-            is AuthState.Authenticated -> onNavigationTo(Screen.MainTabAll)
-            is AuthState.Error -> {
-                Toast.makeText(
-                    context,
-                    currentState.message,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            else -> Unit
-        }
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -156,6 +160,12 @@ fun RegisterView(
                 .fillMaxWidth()
 
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.pencil),
+                contentDescription = "pencil",
+                modifier = Modifier
+                    .size(250.dp)
+            )
             Column(
                 modifier = Modifier
                     .padding(top = 20.dp)
@@ -217,7 +227,7 @@ fun RegisterView(
                     placeholder = {
                         Text(text = stringResource(id = R.string.repeat_password))
                     },
-                    modifier = Modifier.padding(top = 12.dp),
+                    modifier = Modifier.padding(top = 15.dp),
                 )
                 StyledButton(
                     onClick = {
@@ -231,12 +241,13 @@ fun RegisterView(
 
                             return@StyledButton
                         }
-                        authViewModel.signUp(
+                        authViewModel?.signUp(
                             username = state.username,
                             email = state.email,
                             password = state.password
                         )
                     },
+                    enabled = authState != AuthState.Loading,
                     modifier = Modifier.padding(top = 15.dp)
                 ) {
                     Text(
@@ -246,6 +257,7 @@ fun RegisterView(
 
                 TextButton(
                     onClick = { onNavigationTo(Screen.Login) },
+                    enabled = authState != AuthState.Loading,
                     modifier = Modifier.padding(top = 10.dp)
                 ) {
                     Text(
