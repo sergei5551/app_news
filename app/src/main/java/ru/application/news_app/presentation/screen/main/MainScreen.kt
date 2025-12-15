@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ru.application.news_app.domain.dao.AuthViewModel
 import ru.application.news_app.presentation.navigation.Screen
-import ru.application.news_app.presentation.screen.main.feed.MainScreenTabAll
+import ru.application.news_app.presentation.screen.main.feed.feelAll.MainScreenTabAll
 import ru.application.news_app.presentation.screen.main.navigation.MainScreenNavigationRoute
 import ru.application.news_app.presentation.screen.main.profile.ProfileScreen
 import ru.application.news_app.presentation.screen.main.settings.SettingsScreen

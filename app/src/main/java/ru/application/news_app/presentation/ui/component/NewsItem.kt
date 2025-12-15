@@ -31,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -143,7 +142,7 @@ fun NewsItemPreview() {
                 url = null,
                 description = "News item 1 description",
                 publishedBy = "News source",
-                publishedAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+                publishedAt = kotlin.time.Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
                 imageUrl = "",
                 isFavorite = true
             ),
